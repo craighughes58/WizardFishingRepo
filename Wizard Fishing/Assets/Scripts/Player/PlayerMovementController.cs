@@ -16,7 +16,7 @@ public class PlayerMovementController : MonoBehaviour
 
     void FixedUpdate()
     {
-        rb.AddForceAtPosition(Vector2.right * moveDir, transform.up * .15f);
+        rb.AddForceAtPosition(Vector2.right * moveDir, transform.position + (transform.up * .15f));
         rb.AddTorque(rotSpeed * rotDir);
 
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), -decendSpeed);
