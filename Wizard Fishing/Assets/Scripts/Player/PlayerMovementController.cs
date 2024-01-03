@@ -9,8 +9,14 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] float moveForce, maxSpeed, decendSpeed, rotSpeed, maxRotSpeed;
     float moveDir, rotDir;
 
+    public static PlayerMovementController Instance;
+
     void Awake()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -33,4 +39,17 @@ public class PlayerMovementController : MonoBehaviour
     {
         rotDir = input.Get<float>();
     }
+
+    #region Getters and Setters
+
+    public float GetRotation()
+    {
+        return rotDir;
+    }
+
+    public float GetMovementDirection()
+    {
+        return moveDir;
+    }
+    #endregion
 }

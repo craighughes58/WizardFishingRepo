@@ -29,7 +29,7 @@
                     "id": "3c14d5f9-21fb-4200-aa3c-cb5a49037163",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": true
                 },
                 {
