@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovementController : MonoBehaviour
 {
     Rigidbody2D rb;
-    [SerializeField] float moveForce, maxSpeed, decendSpeed, rotSpeed, maxRotSpeed;
+    [SerializeField] float moveForce, maxSpeed, descendSpeed, rotSpeed, maxRotSpeed;
     float moveDir, rotDir;
 
     public static PlayerMovementController Instance;
@@ -25,7 +25,7 @@ public class PlayerMovementController : MonoBehaviour
         rb.AddForceAtPosition(Vector2.right * moveDir, transform.position + (transform.up * .15f));
         rb.AddTorque(rotSpeed * rotDir);
 
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), -decendSpeed);
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), -descendSpeed);
         rb.angularVelocity = Mathf.Clamp(rb.angularVelocity, -maxRotSpeed, maxRotSpeed);
        
     }
@@ -50,6 +50,16 @@ public class PlayerMovementController : MonoBehaviour
     public float GetMovementDirection()
     {
         return moveDir;
+    }
+
+    public float GetDescendSpeed()
+    {
+        return descendSpeed;
+    }
+
+    public void SetDescendSpeed(float speed)
+    {
+        descendSpeed = speed;
     }
     #endregion
 }

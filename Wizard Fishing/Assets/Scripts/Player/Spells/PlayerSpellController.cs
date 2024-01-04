@@ -14,14 +14,32 @@ public class PlayerSpellController : MonoBehaviour
 
     #region Serialized Variables
     [Tooltip("The number of each spell the player has")]
-    [SerializeField]
-    private int[] _spellInventory;
+    [SerializeField] private int[] _spellInventory;
     // 0 = force spike, 1 = deflector, 2 = lightning, 3 = anchor
 
     [Tooltip("The game objects for each spells")]
     [SerializeField]
     private GameObject[] _spells;
 
+    [Tooltip("The offset of where the spell is cast")]
+    [SerializeField] private float _castingOffset;
+
+
+    [Header("Anchor Information")]
+    [Tooltip("How long the anchor effect lasts")]
+    [SerializeField] private float _anchorTime;
+    [Tooltip("How much the speed is affected by the anchor")]
+    [SerializeField] private float _speedMultiplier;
+
+    [Tooltip("Where the anchor is in the spell index")]
+    [SerializeField] private int _anchorIndex;
+
+    [Header("ForceField Information")]
+    [Tooltip("How long the forcefield effect lasts")]
+    [SerializeField] private float _forcefieldTime;
+
+    [Tooltip("Where the forcefield is in the spell index")]
+    [SerializeField] private int _forcefieldIndex;
     /* [Tooltip("The game object of the force spike")]
      [SerializeField]
      private GameObject _forceSpike;
@@ -46,6 +64,8 @@ public class PlayerSpellController : MonoBehaviour
         {
             Instance = this;
         }
+        _spells[_anchorIndex].SetActive(false);
+        _spells[_forcefieldIndex].SetActive(false);
     }
 
 
@@ -92,7 +112,7 @@ public class PlayerSpellController : MonoBehaviour
     #endregion
 
     #region Using Spells
-    void OnSoot(InputValue input)
+    void OnShoot(InputValue input)
     {
         //catch zeroes
         if (_spellInventory[_index] < 0)
@@ -101,19 +121,34 @@ public class PlayerSpellController : MonoBehaviour
         }
         //lose  one spell
         DecrementSpell();
-        //activate selected spell
-        CastSpell(_spells[_index]);
+        if (_index == _anchorIndex)
+        {
+            StartCoroutine(CastAnchor());
+        }
+        else if(_index == _forcefieldIndex)
+        {
+            StartCoroutine(CastForceField());
+        }
+        else
+        {
+            //activate selected spell
+            CastSpell(_spells[_index]);
+        }
 
     }
 
     private void CastSpell(GameObject Spell)
     {
-        Instantiate(Spell, transform.position, transform.rotation); //, PlayerMovementController.Instance.GetRotation()
+        Instantiate(Spell, transform.position + (transform.up * _castingOffset), transform.rotation); //, PlayerMovementController.Instance.GetRotation()
     }
 
 
     private void DecrementSpell()
     {
+        if(_spellInventory[_index] <= 0)
+        {
+            return;
+        }
         if (--_spellInventory[_index] < 0)
         {
             _spellInventory[_index] = 0;
@@ -122,6 +157,29 @@ public class PlayerSpellController : MonoBehaviour
 
 
     #endregion
+
+    #region Passive Abilities
+
+    private IEnumerator CastAnchor()
+    {
+        _spells[_anchorIndex].SetActive(true);
+        PlayerMovementController.Instance.SetDescendSpeed(PlayerMovementController.Instance.GetDescendSpeed() * _speedMultiplier);
+        yield return new WaitForSeconds(_anchorTime);
+        PlayerMovementController.Instance.SetDescendSpeed(PlayerMovementController.Instance.GetDescendSpeed() / _speedMultiplier);
+        _spells[_anchorIndex].SetActive(false);
+        print("ANCHOR OVER");
+    }
+
+    private IEnumerator CastForceField()
+    {
+        _spells[_forcefieldIndex].SetActive(true);
+        yield return new WaitForSeconds(_forcefieldTime);
+        _spells[_forcefieldIndex].SetActive(false);
+        print("FORCE FIELD OVER");
+    }
+
+    #endregion
+
 
     #region UI 
 
