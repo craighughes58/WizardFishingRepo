@@ -16,7 +16,7 @@ public enum FishType
 
 public class GameController : MonoBehaviour
 {
-    static GameController instance;
+    public static GameController instance;
 
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] int startingTime, startingTimeTillBigOne;

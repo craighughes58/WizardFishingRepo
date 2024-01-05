@@ -41,6 +41,11 @@ public class ForceSpikeBehaviour : MonoBehaviour
     {
         if(!collision.gameObject.tag.Equals("Anchor") && !collision.gameObject.tag.Equals("ForceField") && !collision.gameObject.tag.Equals("Player"))
         {
+            IDamageable target = collision.transform.GetComponent<IDamageable>();
+            if (target != null)
+            {
+                target.TakeDamage(_damage);
+            }
             Destroy(gameObject);
         }
     }
@@ -49,6 +54,11 @@ public class ForceSpikeBehaviour : MonoBehaviour
     {
         if (!collision.gameObject.tag.Equals("Anchor") && !collision.gameObject.tag.Equals("ForceField") && !collision.gameObject.tag.Equals("Player"))
         {
+            IDamageable target = collision.transform.GetComponent<IDamageable>();
+            if (target != null)
+            {
+                target.TakeDamage(_damage);
+            }
             Destroy(gameObject);
         }
     }
