@@ -1,8 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using TMPro.EditorUtilities;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum FishType
@@ -22,6 +22,14 @@ public class GameController : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] int startingTime, startingTimeTillBigOne;
+
+    [Tooltip("The minimum and maximum x position between which a fish can spawn")]
+    [SerializeField] Vector2 fishSpawnLimits;
+    [Tooltip("The minimum and maximum time between which a fish can spawn")]
+    [SerializeField] Vector2 fishSpawnTimeLimits;
+    [SerializeField] float fishSpawnYOffest;
+    [SerializeField] FishSpawnWeight[] allFish;
+
     Coroutine fishingTimer;
     float timeRemaining, timeTillBigOne;
     int[] fishCollected = new int[] { 0, 0, 0, 0 };
@@ -50,6 +58,7 @@ public class GameController : MonoBehaviour
         timeRemaining = startingTime;
         timeTillBigOne  = startingTimeTillBigOne;
         fishingTimer = StartCoroutine(FishingTimer());
+        StartCoroutine(SpawnFish());
     }
 
     /// <summary>
@@ -61,6 +70,32 @@ public class GameController : MonoBehaviour
         print("Game is over!!");
     }
 
+
+    IEnumerator SpawnFish()
+    {
+        float[] cumulativeWeights = new float[allFish.Length];
+        cumulativeWeights[0] = allFish[0].spawnWeight;
+        for (int i = 1; i < allFish.Length; ++i)
+        {
+            print(i);
+            cumulativeWeights[i] = cumulativeWeights[i-1] + allFish[i].spawnWeight;
+        }
+
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(fishSpawnTimeLimits.x, fishSpawnTimeLimits.y));
+
+            float selectedWeight = Random.Range(0, cumulativeWeights[cumulativeWeights.Length-1]);
+            for (int i = 0; i < cumulativeWeights.Length; ++i)
+            {
+                if (!(cumulativeWeights[i] >= selectedWeight)) continue;
+
+                Instantiate(allFish[i].fishPrefab, new Vector3(Random.Range(fishSpawnLimits.x, fishSpawnLimits.y), PlayerMovementController.Instance.transform.position.y - fishSpawnYOffest), Quaternion.identity);
+                break;
+            }
+
+        }
+    }
     IEnumerator FishingTimer()
     {
         while (timeRemaining > 0)
