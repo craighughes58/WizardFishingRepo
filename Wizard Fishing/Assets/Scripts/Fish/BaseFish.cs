@@ -8,12 +8,12 @@ public class BaseFish : MonoBehaviour, IDamageable
     [SerializeField] FishType fishType;
     int currentHP;
 
-    void Awake()
+    protected virtual void Awake()
     {
         currentHP = maxHP;
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         currentHP -= damage;
         if(currentHP <= 0) 
@@ -22,7 +22,7 @@ public class BaseFish : MonoBehaviour, IDamageable
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         GameController.instance.CollectFish(fishType);
         Destroy(gameObject);

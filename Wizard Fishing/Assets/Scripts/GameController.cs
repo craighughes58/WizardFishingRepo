@@ -7,10 +7,12 @@ using UnityEngine;
 
 public enum FishType
 {
-    Type0 = 0,
-    Type1 = 1,
-    Type2 = 2,
-    Type3 = 3
+    None = -1,
+    Force = 0,
+    Deflector = 1,
+    Lightning = 2,
+    Anchor = 3,
+    Bubble = 4
 }
 
 
@@ -104,6 +106,7 @@ public class GameController : MonoBehaviour
             Debug.LogWarning("HEY!!! THE FISH COLLECTED ARRAY ISN'T BIG ENOUGH FOR THE FISH OF TYPE " +  fishType);
             return;
         }
+        if (fishType == FishType.None) return;
 
         fishCollected[(int)fishType]++;
     }
